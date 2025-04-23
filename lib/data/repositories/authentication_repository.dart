@@ -1,5 +1,6 @@
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:login/data/services/api_service.dart';
 import 'package:login/features/authentication/models/user_model.dart';
 import 'package:login/features/authentication/screens/login/login.dart';
 import 'package:login/features/other/screens/home_screen.dart';
@@ -32,40 +33,53 @@ class AuthenticationRepository extends GetxController {
 
   /* -------------------------------- Authentication ----------------------------*/
   // [Username and Password] - Sign in
-  Future<UserModel> loginWithUsernameAndPassword(
-    String username,
-    String password,
-  ) async {
+  Future<UserModel> loginWithUsernameAndPassword(String username, String password) async {
+    try {
+      // Get user details from API
+      final userDetails = await ApiService.instance.fetchUserDetails(username, password);
+      if (userDetails.username.isNotEmpty && userDetails.phoneNumber.isNotEmpty) {
+        // Save user details to local storage
+        // localStorage.write("IS_LOGGED_IN", true);
+        // localStorage.write("USERNAME", userDetails.username);
+        // localStorage.write("PHONE_NUMBER", userDetails.phoneNumber);
+
+        return userDetails;
+      } else {
+        throw Exception("المعطيات المدخلة غير صحيحة");
+      }
+    } catch (e) {
+      throw "المعطيات المدخلة غير صحيحة";
+    }
+  }
+
+  // [Phone Authentication] - Send OTP
+  Future<void> sendOTP(String phoneNumber) async {
     try {
       // Simulate a network call
-      await Future.delayed(const Duration(seconds: 2));
+      await Future.delayed(const Duration(seconds: 1));
 
-      // Check if username and password are correct
-      if (username == "test" && password == "password") {
-        return UserModel(
-          username: username,
-          password: password,
-          phoneNumber: 009647802089950,
-        );
+      // Check if phone number is a valid Iraqi number
+      if (phoneNumber.startsWith("00964") && phoneNumber.length == 15) {
+        return;
       } else {
-        throw Exception("Invalid username or password");
+        throw Exception("الرقم المدخل غير صحيح");
       }
     } catch (e) {
       throw "Something went wrong, please try again";
     }
   }
 
-  // [Phone Authentication] - Sign in
-  Future<void> sendOTP(int phoneNumber) async {
+  // [Phone Authentication] - Verify OTP
+  Future<void> verifyOTP(String otp) async {
     try {
       // Simulate a network call
-      await Future.delayed(const Duration(seconds: 2));
+      await Future.delayed(const Duration(seconds: 1));
 
-      // Check if phone number is valid
-      if (phoneNumber == 009647802089950) {
+      // Check if OTP is valid
+      if (otp.length == 6) {
         return;
       } else {
-        throw Exception("Invalid phone number");
+        throw Exception("الرمز المدخل غير صحيح");
       }
     } catch (e) {
       throw "Something went wrong, please try again";

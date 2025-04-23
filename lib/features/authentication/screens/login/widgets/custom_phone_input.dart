@@ -1,28 +1,26 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:login/features/authentication/controllers/login_controller.dart';
 
 class CustomPhoneInput extends StatelessWidget {
-  const CustomPhoneInput({super.key});
+  const CustomPhoneInput({super.key, required this.phoneNumber});
+
+  final String phoneNumber;
 
   @override
   Widget build(BuildContext context) {
-    // Todo - change into instance;
-    final controller = Get.put(LoginController());
+    final controller = LoginController.instance;
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         // visible numbers
-        Text("00964780208"),
+        Text(phoneNumber),
+
         // invisible numbers
         SizedBox(
           width: 90,
           child: TextFormField(
             controller: controller.lastFourDigits,
-            decoration: InputDecoration(
-              label: Text("XXXX"),
-              border: OutlineInputBorder(),
-            ),
+            decoration: InputDecoration(label: Text("XXXX"), border: OutlineInputBorder()),
           ),
         ),
       ],

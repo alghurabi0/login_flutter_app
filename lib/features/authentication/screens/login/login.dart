@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:login/common/styles/spacing_style.dart';
 import 'package:login/features/authentication/screens/login/widgets/login_form.dart';
-import 'package:login/utils/constants/sizes.dart';
 
 class LoginScreen extends StatelessWidget {
   const LoginScreen({super.key});
@@ -9,12 +9,11 @@ class LoginScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SingleChildScrollView(
+        padding: AppSpacingStyle.paddingWithAppBarHeight,
         child: Column(
           children: [
-            Padding(
-              padding: const EdgeInsets.all(TSizes.defaultSpace),
-              child: LoginForm(),
-            ),
+            // Login Form
+            LoginForm(),
           ],
         ),
       ),

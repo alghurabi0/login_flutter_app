@@ -3,7 +3,9 @@ import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:login/data/repositories/authentication_repository.dart';
 import 'package:login/features/authentication/models/user_model.dart';
+import 'package:login/features/authentication/screens/login/otp_verification.dart';
 import 'package:login/features/authentication/screens/login/phone_auth.dart';
+import 'package:login/features/other/screens/home_screen.dart';
 import 'package:login/utils/helpers/network_manager.dart';
 import 'package:login/utils/popups/full_screen_loader.dart';
 import 'package:login/utils/popups/loaders.dart';
@@ -18,10 +20,13 @@ class LoginController extends GetxController {
 
   final username = TextEditingController();
   final password = TextEditingController();
-  final lastFourDigits = TextEditingController();
-
-  int fullPhoneNumber = 0;
   GlobalKey<FormState> loginFormKey = GlobalKey<FormState>();
+
+  String fullPhoneNumber = "";
+  final lastFourDigits = TextEditingController();
+  final otp = TextEditingController();
+
+  final _auth = AuthenticationRepository.instance;
 
   // Username and Password SignIn
   Future<void> login() async {
@@ -49,11 +54,7 @@ class LoginController extends GetxController {
       }
 
       // Log in user with username and password
-      UserModel user = await AuthenticationRepository.instance
-          .loginWithUsernameAndPassword(
-            username.text.trim(),
-            password.text.trim(),
-          );
+      UserModel user = await _auth.loginWithUsernameAndPassword(username.text.trim(), password.text.trim());
 
       fullPhoneNumber = user.phoneNumber;
 
@@ -61,7 +62,7 @@ class LoginController extends GetxController {
       TFullScreenLoader.stopLoading();
 
       // Redirect to phone authentication screen
-      Get.to(() => PhoneAuthScreen());
+      Get.to(() => PhoneAuthScreen(phoneNumber: fullPhoneNumber.substring(0, fullPhoneNumber.length - 4)));
     } catch (e) {
       TFullScreenLoader.stopLoading();
       TLoaders.errorSnackBar(title: "حصل خطأ", message: e.toString());
@@ -81,20 +82,60 @@ class LoginController extends GetxController {
         return;
       }
 
-      // TODO: Validation
+      // Validation
       if (lastFourDigits.text.trim().length != 4) {
         TFullScreenLoader.stopLoading();
+        TLoaders.errorSnackBar(title: "خطأ", message: "الرجاء ادخال 4 ارقام صحيحة");
+        return;
+      }
+      if (lastFourDigits.text.trim() != fullPhoneNumber.substring(fullPhoneNumber.length - 4)) {
+        TFullScreenLoader.stopLoading();
+        TLoaders.errorSnackBar(title: "خطأ", message: "الرقم المدخل غير صحيح");
         return;
       }
 
-      // Log in user with last four digits
-      await AuthenticationRepository.instance.sendOTP(fullPhoneNumber);
+      // Send OTP
+      await _auth.sendOTP(fullPhoneNumber);
 
       // Remove Loader
       TFullScreenLoader.stopLoading();
 
       // Redirect to otp verification screen
       Get.to(() => OTPVerificationScreen());
+    } catch (e) {
+      TFullScreenLoader.stopLoading();
+      TLoaders.errorSnackBar(title: "حصل خطأ", message: e.toString());
+    }
+  }
+
+  Future<void> verifyOTP() async {
+    print("Verifying OTP: ${otp.text.trim()}");
+    try {
+      // Start Loading
+      TFullScreenLoader.openLoadingDialog("Verifying ...", "animation");
+
+      // Check Internet Connectivity
+      final isConnected = await NetworkManager.instance.isConnected();
+      if (!isConnected) {
+        TFullScreenLoader.stopLoading();
+        return;
+      }
+
+      // Validation
+      if (otp.text.trim().length != 6) {
+        TFullScreenLoader.stopLoading();
+        TLoaders.errorSnackBar(title: "خطأ", message: "الرجاء ادخال 6 ارقام صحيحة");
+        return;
+      }
+
+      // Verify OTP
+      await _auth.verifyOTP(otp.text.trim());
+
+      // Remove Loader
+      TFullScreenLoader.stopLoading();
+
+      // Redirect to home screen
+      Get.offAll(() => HomeScreen());
     } catch (e) {
       TFullScreenLoader.stopLoading();
       TLoaders.errorSnackBar(title: "حصل خطأ", message: e.toString());
