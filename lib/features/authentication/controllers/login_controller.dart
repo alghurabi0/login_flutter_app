@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:login/data/repositories/authentication_repository.dart';
+import 'package:login/features/authentication/models/user_model.dart';
 import 'package:login/features/authentication/screens/login/phone_auth.dart';
 import 'package:login/utils/helpers/network_manager.dart';
 import 'package:login/utils/popups/full_screen_loader.dart';
@@ -18,6 +19,8 @@ class LoginController extends GetxController {
   final username = TextEditingController();
   final password = TextEditingController();
   final lastFourDigits = TextEditingController();
+
+  int fullPhoneNumber = 0;
   GlobalKey<FormState> loginFormKey = GlobalKey<FormState>();
 
   // Username and Password SignIn
@@ -46,10 +49,13 @@ class LoginController extends GetxController {
       }
 
       // Log in user with username and password
-      await AuthenticationRepository.instance.loginWithUsernameAndPassword(
-        username.text.trim(),
-        password.text.trim(),
-      );
+      UserModel user = await AuthenticationRepository.instance
+          .loginWithUsernameAndPassword(
+            username.text.trim(),
+            password.text.trim(),
+          );
+
+      fullPhoneNumber = user.phoneNumber;
 
       // Remove Loader
       TFullScreenLoader.stopLoading();
@@ -75,29 +81,20 @@ class LoginController extends GetxController {
         return;
       }
 
-      // Form Validation
+      // TODO: Validation
       if (lastFourDigits.text.trim().length != 4) {
         TFullScreenLoader.stopLoading();
         return;
       }
 
-      // Save data if remember me is selected
-      if (rememberMe.value) {
-        localStorage.write(
-          "REMEMBER_ME_LAST_FOUR_DIGITS",
-          lastFourDigits.text.trim(),
-        );
-      }
-
       // Log in user with last four digits
-      await AuthenticationRepository.instance.loginWithLastFourDigits(
-        lastFourDigits.text.trim(),
-      );
+      await AuthenticationRepository.instance.sendOTP(fullPhoneNumber);
 
       // Remove Loader
       TFullScreenLoader.stopLoading();
 
-      // Redirect to home screen
+      // Redirect to otp verification screen
+      Get.to(() => OTPVerificationScreen());
     } catch (e) {
       TFullScreenLoader.stopLoading();
       TLoaders.errorSnackBar(title: "حصل خطأ", message: e.toString());

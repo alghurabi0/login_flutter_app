@@ -42,7 +42,11 @@ class AuthenticationRepository extends GetxController {
 
       // Check if username and password are correct
       if (username == "test" && password == "password") {
-        return UserModel(username: username, password: password);
+        return UserModel(
+          username: username,
+          password: password,
+          phoneNumber: 009647802089950,
+        );
       } else {
         throw Exception("Invalid username or password");
       }
@@ -52,4 +56,19 @@ class AuthenticationRepository extends GetxController {
   }
 
   // [Phone Authentication] - Sign in
+  Future<void> sendOTP(int phoneNumber) async {
+    try {
+      // Simulate a network call
+      await Future.delayed(const Duration(seconds: 2));
+
+      // Check if phone number is valid
+      if (phoneNumber == 009647802089950) {
+        return;
+      } else {
+        throw Exception("Invalid phone number");
+      }
+    } catch (e) {
+      throw "Something went wrong, please try again";
+    }
+  }
 }
