@@ -14,7 +14,11 @@ class PhoneAuthScreen extends StatelessWidget {
     return Scaffold(
       body: SingleChildScrollView(
         child: Padding(
-          padding: EdgeInsets.all(TSizes.defaultSpace),
+          padding: EdgeInsets.only(
+            top: TSizes.appBarHeight * 2,
+            left: TSizes.defaultSpace,
+            right: TSizes.defaultSpace,
+          ),
           child: Column(
             children: [
               // Custom Phone Number input
@@ -24,7 +28,10 @@ class PhoneAuthScreen extends StatelessWidget {
               // Confirm Button
               SizedBox(
                 width: TSizes.buttonWidth,
-                child: ElevatedButton(onPressed: () => controller.confirmLastFourDigits(), child: Text("تأكيد")),
+                child: ElevatedButton(
+                  onPressed: () => controller.confirmLastFourDigits(),
+                  child: Text("تأكيد"),
+                ),
               ),
             ],
           ),

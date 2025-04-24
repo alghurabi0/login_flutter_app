@@ -12,7 +12,11 @@ class OTPVerificationScreen extends StatelessWidget {
     return Scaffold(
       body: SingleChildScrollView(
         child: Padding(
-          padding: EdgeInsets.all(TSizes.defaultSpace),
+          padding: EdgeInsets.only(
+            top: TSizes.appBarHeight * 2,
+            right: TSizes.defaultSpace,
+            left: TSizes.defaultSpace,
+          ),
           child: Column(
             children: [
               // OTP Input
@@ -36,7 +40,10 @@ class OTPVerificationScreen extends StatelessWidget {
               // Verify Button
               SizedBox(
                 width: double.infinity,
-                child: ElevatedButton(onPressed: () => controller.verifyOTP(), child: Text("تأكيد")),
+                child: ElevatedButton(
+                  onPressed: () => controller.verifyOTP(),
+                  child: Text("تأكيد"),
+                ),
               ),
             ],
           ),

@@ -17,9 +17,9 @@ samples, guidance on mobile development, and a full API reference.
 
 # Todos
 
-- [] replace dummy data with firestore implementation
-- [] create a session id on login and store it in local storage and user's firestore doc
-- [] create a middleware on every request (except login) to fetch user doc from fire store and check the session id with the one in local storage
-- [] if valid, proceed with the request, if not, remove session id from local storage and sign user out (send to login screen)
-- [] implement screen redirect logic on app launch
-- [] create dummy api calls in home screen for testing
+- [x] replace dummy data with firestore implementation
+- [x] create a session id on login and store it in local storage and user's firestore doc
+- [x] create a middleware on every request (except login) to fetch user doc from fire store and check the session id with the one in local storage
+- [x] if valid, proceed with the request, if not, remove session id from local storage and sign user out (send to login screen)
+- [x] implement screen redirect logic on app launch
+- [x] create dummy api calls in home screen for testing

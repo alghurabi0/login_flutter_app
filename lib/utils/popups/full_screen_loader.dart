@@ -26,7 +26,9 @@ class TFullScreenLoader {
               child: Column(
                 children: [
                   const SizedBox(height: 250), // Adjust the spacing as needed
-                  Text(text),
+                  CircularProgressIndicator(),
+                  const SizedBox(height: 100),
+                  Text(text, style: TextStyle(fontSize: 15)),
                 ],
               ),
             ),

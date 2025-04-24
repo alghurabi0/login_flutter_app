@@ -13,14 +13,17 @@ class CustomPhoneInput extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         // visible numbers
-        Text(phoneNumber),
+        Text(phoneNumber, style: Theme.of(context).textTheme.headlineLarge),
 
         // invisible numbers
         SizedBox(
           width: 90,
           child: TextFormField(
             controller: controller.lastFourDigits,
-            decoration: InputDecoration(label: Text("XXXX"), border: OutlineInputBorder()),
+            decoration: InputDecoration(
+              label: Text("XXXX"),
+              border: OutlineInputBorder(),
+            ),
           ),
         ),
       ],
