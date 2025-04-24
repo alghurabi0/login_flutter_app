@@ -8,10 +8,6 @@ import 'package:login/utils/bindings/general_bindings.dart';
 import 'package:login/utils/theme/theme.dart';
 
 void main() async {
-  // Widgets Binding (if using native_splash_screen)
-  // final WidgetsBinding widgetsBinding =
-  //     WidgetsFlutterBinding.ensureInitialized();
-
   // Init local storage
   await GetStorage.init();
 
